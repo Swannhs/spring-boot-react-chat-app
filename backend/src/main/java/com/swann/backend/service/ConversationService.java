@@ -13,9 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +31,7 @@ public class ConversationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Conversation not found"));
         Message message = modelMapper.map(newMessageDTO, Message.class);
         message.setConversation(conversation);
+        message.setTimestamp(LocalDateTime.now());
         messageRepository.save(message);
         return modelMapper.map(message, MessageDTO.class);
     }
@@ -40,8 +39,17 @@ public class ConversationService {
     public List<MessageDTO> getConversationMessages(UUID conversationId) {
         Conversation conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conversation not found"));
-        return conversation.getMessages().stream().map(message -> modelMapper.map(message, MessageDTO.class)).toList();
+
+        Set<Message> sortedMessages = new TreeSet<>(Comparator.comparing(Message::getTimestamp));
+        sortedMessages.addAll(conversation.getMessages());
+
+        List<MessageDTO> messageDTOList = new ArrayList<>();
+        for (Message message : sortedMessages) {
+            messageDTOList.add(modelMapper.map(message, MessageDTO.class));
+        }
+        return messageDTOList;
     }
+
 
     public List<ConversationsDTO> getConversations() {
         return conversationRepository.findAll().stream().map(conversation -> modelMapper.map(conversation, ConversationsDTO.class)).toList();
