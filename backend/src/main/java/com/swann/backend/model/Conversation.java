@@ -19,12 +19,9 @@ import java.util.UUID;
 @Table(name = "conversations")
 public class Conversation {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
-    @Column(name = "messages")
     private Set<Message> messages = new HashSet<>();
 }
