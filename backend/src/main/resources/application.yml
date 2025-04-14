@@ -12,6 +12,9 @@ logging:
   level:
     org.springframework.web.socket: DEBUG
     org.springframework.messaging: DEBUG
+jwt:
+  secret: L9n1xG6WZf2BL1q2A93FZ1yA8d1zKbnWl3P+xtFlSlM=
+  expiration: 86400000
 
 server:
   port: 8080

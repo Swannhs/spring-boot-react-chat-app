@@ -2,16 +2,14 @@ version: '3.8'
 
 services:
   mysql:
-    image: mysql:5.7
+    image: mysql:8.2
     container_name: database
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: chat_app
       MYSQL_USER: chat_app_user
       MYSQL_PASSWORD: chat_app_password
-    ports:
-      - "3306:3306"
+    network_mode: host
     volumes:
-      - ./mysql:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
